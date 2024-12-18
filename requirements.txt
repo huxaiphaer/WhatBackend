@@ -8,6 +8,7 @@ djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 drf-yasg==1.21.8
 exceptiongroup==1.2.2
+gunicorn==23.0.0
 inflection==0.5.1
 iniconfig==2.0.0
 packaging==24.2
