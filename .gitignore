@@ -55,9 +55,7 @@ htmlcov/
 .cache/
 
 # Docker
-docker-compose.override.yml
 *.dockerfile
-docker-compose*.yml
 *.dockerignore
 
 # Next.js build output
