@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+
+import dj_database_url
 from dotenv import load_dotenv
 
 
@@ -68,6 +70,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(",")
 
+
 ROOT_URLCONF = "whatproject.urls"
 
 TEMPLATES = [
@@ -95,11 +98,13 @@ WSGI_APPLICATION = "whatproject.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        **dj_database_url.config(
+            conn_max_age=600,  # 10 minutes for connection pooling
+            ssl_require=False,
+            default=os.getenv("DATABASE_URL")
+        ),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
