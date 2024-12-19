@@ -1,31 +1,27 @@
+version: '3.7'
+
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8000:80"
-    volumes:
-      - ".:/app:rw"
-      - "./data:/data:rw"
-    environment:
-      DATABASE_URL: postgres://huxaiphaeridris:@HLl654321123@whatdb.postgres.database.azure.com:5432/postgres
-      DEBUG: 'True'
-      SECRET_KEY: secret_key
-      CSRF_TRUSTED_ORIGINS: https://whatbackend.us.aldryn.io
-    links:
-      - "database_default"
-    # The following command is used to start the local development server.
-    # Removing this line will mimic the deployment behaviour on Divio Cloud.
-    command: python manage.py runserver 0.0.0.0:80
+      - "8001:8001"
+      - "50051:50051"
+    env_file:
+      - .env
 
-  database_default:
-    image: postgres:15.7-alpine
+  db:
+    image: postgres:13
     environment:
-      POSTGRES_DB: "db"
-      POSTGRES_HOST_AUTH_METHOD: "trust"
-      SERVICE_MANAGER: "fsm-postgres"
+      POSTGRES_DB: pixsar
+      POSTGRES_USER: pixsar
+      POSTGRES_PASSWORD: namungoona
+    ports:
+      - "5432:5432"
     volumes:
-      - ".:/app:rw"
-      - "database-default:/var/lib/postgresql/data/"
+      - postgres_data:/var/lib/postgresql/data
+
 
 volumes:
-  database-default:
+  postgres_data:

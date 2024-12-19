@@ -1,34 +1,35 @@
-FROM python:3.12
+# Use an official Python runtime as a parent image
+FROM python:3.10
 
-# Set environment variables for Python
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Set the working directory to /app
+# Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y postgresql-client libpq-dev postgresql-contrib
+# Install system dependencies including FFmpeg
+RUN apt-get update && apt-get install -y \
+    supervisor \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy only the requirements.in and .env.local files into the container
+# Install dependencies
 COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt pytest pytest-django
 
-# Install pip-tools
-RUN pip install --upgrade pip && \
-    pip install pip-tools
 
-# Compile requirements.in to requirements.txt and install pip requirements
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Supervisor
+RUN apt-get update && apt-get install -y supervisor
 
-# Copy the rest of the project files into the container
+# Copy the project code into the container
 COPY . /app/
 
-# Run collectstatic to gather static files
-RUN python manage.py collectstatic --noinput
+# Copy Supervisor configuration file
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+# Expose port 8001 to the outside world
+EXPOSE 8001
 
-# Define the command to run your application
-CMD ["gunicorn", "whatproject.wsgi:application", "--bind", "0.0.0.0:80"]
+# Command to run Supervisor
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
