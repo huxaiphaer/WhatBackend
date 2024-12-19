@@ -37,12 +37,10 @@ schema_view = get_schema_view(
 )
 
 
-def redirect_to_admin(request):
-    return redirect('/admin/login/')
-
 
 urlpatterns = [
-    path("", redirect_to_admin),
+    path('admin/', admin.site.urls),
+    path('', lambda request: redirect('/admin/login')),
     path('api/v1/auth/', include('users.urls')),
     path('api/v1/products/', include('products.urls')),
 

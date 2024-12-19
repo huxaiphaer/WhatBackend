@@ -113,7 +113,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         **dj_database_url.config(
             conn_max_age=600,
-            ssl_require=True,  # Change this to True for Divio
+            ssl_require=True,
             default=os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/db")
         ),
         'OPTIONS': {
