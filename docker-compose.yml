@@ -6,11 +6,8 @@ services:
     volumes:
       - ".:/app:rw"
       - "./data:/data:rw"
-    environment:
-      DATABASE_URL: postgres://postgres@database_default:5432/db
-      CORS_ALLOWED_ORIGINS: "http://localhost:3000"
-      SECRET_KEY: secret_key
-      DEBUG: 'False'
+    env_file:
+      - .env
     links:
       - "database_default"
     command: python manage.py runserver 0.0.0.0:80
