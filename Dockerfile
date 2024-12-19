@@ -12,15 +12,14 @@ RUN apt-get update && \
     apt-get install -y postgresql-client libpq-dev postgresql-contrib
 
 # Copy only the requirements.in and .env.local files into the container
-COPY requirements.in /app/
+COPY requirements.txt /app/
 
 # Install pip-tools
 RUN pip install --upgrade pip && \
     pip install pip-tools
 
 # Compile requirements.in to requirements.txt and install pip requirements
-RUN pip-compile requirements.in && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the project files into the container
 COPY . /app/
