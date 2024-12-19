@@ -72,6 +72,13 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(",")
 
 
+AUTHENTICATION_BACKENDS = [
+    'users.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+
 ROOT_URLCONF = "whatproject.urls"
 
 TEMPLATES = [

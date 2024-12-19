@@ -28,13 +28,14 @@ class LoginView(GenericAPIView):
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
-        username = request.data.get('username')
+        email = request.data.get('email')
         password = request.data.get('password')
+        user = authenticate(request=request, email=email, password=password)
 
-        user = authenticate(username=username, password=password)
         if user:
             refresh = RefreshToken.for_user(user)
             return Response({
+                "email": email,
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
             })
