@@ -1,22 +1,35 @@
-FROM python:3.10
+FROM python:3.12
 
-ENV PYTHONUNBUFFERED 1
+# Set environment variables for Python
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
+# Set the working directory to /app
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y postgresql-client libpq-dev postgresql-contrib
 
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt pytest pytest-django
+# Copy only the requirements.in and .env.local files into the container
+COPY requirements.in /app/
 
+# Install pip-tools
+RUN pip install --upgrade pip && \
+    pip install pip-tools
+
+# Compile requirements.in to requirements.txt and install pip requirements
+RUN pip-compile requirements.in && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the project files into the container
 COPY . /app/
 
-EXPOSE 8001
+# Run collectstatic to gather static files
+RUN python manage.py collectstatic --noinput
 
-# We'll use a shell script to handle startup
-COPY scripts/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Make port 80 available to the world outside this container
+EXPOSE 80
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Define the command to run your application
+CMD ["gunicorn", "whatproject.wsgi:application", "--bind", "0.0.0.0:80"]
