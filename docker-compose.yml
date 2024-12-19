@@ -7,13 +7,14 @@ services:
       - ".:/app:rw"
       - "./data:/data:rw"
     environment:
-      - CORS_ALLOWED_ORIGINS=*
-      - DATABASE_URL=postgres://huxaiphaeridris:%40HLl654321123@whatdb.postgres.database.azure.com:5432/postgres
-      - SECRET_KEY=secret_key
-      - DEBUG=False
-      - CSRF_TRUSTED_ORIGINS=https://whatbackend.us.aldryn.io
+      DATABASE_URL: postgres://huxaiphaeridris:@HLl654321123@whatdb.postgres.database.azure.com:5432/postgres
+      DEBUG: 'True'
+      SECRET_KEY: secret_key
+      CSRF_TRUSTED_ORIGINS: https://whatbackend.us.aldryn.io
     links:
       - "database_default"
+    # The following command is used to start the local development server.
+    # Removing this line will mimic the deployment behaviour on Divio Cloud.
     command: python manage.py runserver 0.0.0.0:80
 
   database_default:
@@ -21,6 +22,7 @@ services:
     environment:
       POSTGRES_DB: "db"
       POSTGRES_HOST_AUTH_METHOD: "trust"
+      SERVICE_MANAGER: "fsm-postgres"
     volumes:
       - ".:/app:rw"
       - "database-default:/var/lib/postgresql/data/"
