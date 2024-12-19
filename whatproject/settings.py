@@ -108,11 +108,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 DATABASES = {
     "default": {
+        'ENGINE': 'django.db.backends.postgresql',
         **dj_database_url.config(
-            conn_max_age=600,  # 10 minutes for connection pooling
-            ssl_require=False,
-            default=os.getenv("DATABASE_URL")
+            conn_max_age=600,
+            ssl_require=True,  # Change this to True for Divio
+            default=os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/db")
         ),
+        'OPTIONS': {
+            'sslmode': 'require'
+        }
     }
 }
 
