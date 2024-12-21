@@ -31,13 +31,14 @@ class ProductListCreateView(generics.ListCreateAPIView):
 
 
 @api_view(['POST'])
-def select_product(request, pk):
+def toggle_product_selection(request, pk):
     try:
         product = Product.objects.get(pk=pk)
     except Product.DoesNotExist:
         return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    product.selected = True
+    product.selected = not product.selected
     product.save()
+
     serializer = ProductSerializer(product)
     return Response(serializer.data, status=status.HTTP_200_OK)
