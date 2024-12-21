@@ -33,6 +33,23 @@ DEBUG = os.getenv('DEBUG', 'True')
 
 ALLOWED_HOSTS = ["*"]
 
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrftoken",
+    "accept",
+    "origin",
+]
+
 
 # Application definition
 
@@ -72,6 +89,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "https://whatbackend.us.aldryn.io").split(",")
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 AUTHENTICATION_BACKENDS = [

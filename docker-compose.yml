@@ -1,26 +1,39 @@
-version: "2.4"
+version: '3.8'
 
 services:
   web:
-    build: "."
+    build: .
     ports:
       - "8000:80"
     volumes:
       - ".:/app:rw"
       - "./data:/data:rw"
-    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database_default:5432/db
+      DEBUG: 'True'
+      SECRET_KEY: secret_key
+      CSRF_TRUSTED_ORIGINS: https://localhost
+    depends_on:
+      - database_default
+    networks:
+      - what
     command: python manage.py runserver 0.0.0.0:80
-    links:
-      - "database_default"
 
   database_default:
-    image: postgres:13.5-alpine
+    image: postgres:15.7-alpine
     environment:
       POSTGRES_DB: "db"
       POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "secret"
+      POSTGRES_PASSWORD: "postgres"
+      SERVICE_MANAGER: "fsm-postgres"
     volumes:
-      - "./data/db:/var/lib/postgresql/data/"
+      - database-default:/var/lib/postgresql/data
+      - ".:/app:rw"
+    networks:
+      - what
 
 volumes:
-  data:
+  database-default:
+
+networks:
+  what:
