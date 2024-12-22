@@ -37,9 +37,6 @@ def toggle_product_selection(request, pk):
     except Product.DoesNotExist:
         return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    print('exact ', not product.selected)
-    print('changed ', not product.selected)
-
     product.selected = not product.selected
     product.save()
 
